@@ -1,0 +1,45 @@
+version: "3"
+
+networks:
+  default:
+  metrics:
+    external: true
+
+services:
+  blocky:
+    image: spx01/blocky
+    ports:
+      - target: 53
+        published: 5353
+        protocol: tcp
+        mode: host
+      - target: 53
+        published: 5353
+        protocol: udp
+        mode: host
+    environment:
+      - "TZ=%%<TIME_ZONE>%%"
+    volumes:
+      - %%<SWARM_DATA>%%/dns/blocky_config.yml:/app/config.yml:ro
+    depends_on:
+      - redis
+    deploy:
+      mode: global
+    labels:
+      - "prometheus_export=dns_blocky"
+    networks:
+      - default
+      - metrics
+
+  redis:
+    image: redis:7-alpine
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        limits:
+          memory: 100M
+    volumes:
+      - %%<SWARM_DATA>%%/dns/redis_data:/data
+    networks:
+      - default

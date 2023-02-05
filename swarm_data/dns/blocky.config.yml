@@ -1,0 +1,14 @@
+httpPort: 4000
+
+prometheus:
+  enable: true
+  path: /metrics
+
+upstream:
+  default:
+    - 1.1.1.1
+    - 1.0.0.1
+
+redis:
+  address: redis:6379
+  required: true
