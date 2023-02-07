@@ -1,0 +1,25 @@
+version: "3"
+
+networks:
+  proxy:
+    external: true
+
+services:
+  traefik:
+    image: traefik:2.9
+    ports:
+      - "80:80"
+      - "443:443/tcp"
+      - "443:443/udp"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - %%<SWARM_DATA>%%/proxy/traefik.yml:/etc/traefik/traefik.yml:ro
+      - %%<SWARM_DATA>%%/proxy/dynamic.yml:/dynamic.yml:ro
+      # need to have "chmod 600" run on it
+      - %%<SWARM_DATA>%%/proxy/acme.json:/acme.json
+    networks:
+      - proxy
+    environment:
+      # e.g. acme using cloudflare api
+      # must have following permissions: Zone:Read, DNS:Edit
+      - "CF_DNS_API_TOKEN=%%<CF_DNS_API_TOKEN>%%"

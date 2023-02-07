@@ -9,8 +9,12 @@ Anonymized configs that are used in my cluster.
 - Docker Swarm setup
 - Docker Swarm Networks Created
   - metrics (overlay, attachable)
+  - proxy (overlay, attachable)
 
 ## Usage
 - Replace template fields with own values (Wrapped in `%%<Field Name>%%`)
   - TIME_ZONE
   - SWARM_DATA
+  - LETS_ENCRYPT_EMAIL
+  - CF_DNS_API_TOKEN (Zone:Read, DNS:Edit)
+  - BASE_PROXY_FQDN
