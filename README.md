@@ -18,3 +18,4 @@ Anonymized configs that are used in my cluster.
   - LETS_ENCRYPT_EMAIL
   - CF_DNS_API_TOKEN (Zone:Read, DNS:Edit)
   - BASE_PROXY_FQDN
+  - DOCKER_GID (find using `getent group docker`)
