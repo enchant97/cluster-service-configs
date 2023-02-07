@@ -118,17 +118,23 @@
             "description": "",
             "fieldConfig": {
                 "defaults": {
-                    "mappings": [],
+                    "mappings": [
+                        {
+                            "options": {
+                                "null": {
+                                    "index": 0,
+                                    "text": "N/A"
+                                }
+                            },
+                            "type": "value"
+                        }
+                    ],
                     "thresholds": {
                         "mode": "absolute",
                         "steps": [
                             {
                                 "color": "green",
                                 "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
                             }
                         ]
                     },
@@ -137,12 +143,12 @@
                 "overrides": []
             },
             "gridPos": {
-                "h": 6,
-                "w": 14,
+                "h": 7,
+                "w": 4,
                 "x": 10,
                 "y": 0
             },
-            "id": 8,
+            "id": 16,
             "options": {
                 "colorMode": "value",
                 "graphMode": "area",
@@ -165,17 +171,109 @@
                         "uid": "YXFFeJ0Vz"
                     },
                     "editorMode": "builder",
-                    "exemplar": false,
-                    "expr": "avg by(docker_node) (blocky_request_duration_ms_sum)",
-                    "instant": false,
-                    "legendFormat": "__auto",
+                    "expr": "sum(increase(blocky_request_duration_ms_sum[$__range])) / sum(increase(blocky_request_duration_ms_count[$__range]))",
+                    "format": "table",
+                    "legendFormat": "",
                     "range": true,
                     "refId": "A"
                 }
             ],
-            "title": "Request Time",
-            "transformations": [],
+            "title": "Avg Response Time",
             "type": "stat"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "YXFFeJ0Vz"
+            },
+            "description": "",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "scaleDistribution": {
+                            "type": "linear"
+                        }
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 7,
+                "w": 10,
+                "x": 14,
+                "y": 0
+            },
+            "id": 8,
+            "options": {
+                "calculate": false,
+                "calculation": {
+                    "xBuckets": {
+                        "mode": "size"
+                    },
+                    "yBuckets": {
+                        "mode": "size"
+                    }
+                },
+                "cellGap": 1,
+                "cellValues": {
+                    "unit": "none"
+                },
+                "color": {
+                    "exponent": 0.5,
+                    "fill": "green",
+                    "mode": "opacity",
+                    "reverse": false,
+                    "scale": "exponential",
+                    "scheme": "Turbo",
+                    "steps": 64
+                },
+                "exemplars": {
+                    "color": "rgba(255,0,255,0.7)"
+                },
+                "filterValues": {
+                    "le": 1e-9
+                },
+                "legend": {
+                    "show": true
+                },
+                "rowsFrame": {
+                    "layout": "auto"
+                },
+                "tooltip": {
+                    "show": true,
+                    "yHistogram": false
+                },
+                "yAxis": {
+                    "axisPlacement": "left",
+                    "reverse": false,
+                    "unit": "ms"
+                }
+            },
+            "pluginVersion": "9.3.6",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "YXFFeJ0Vz"
+                    },
+                    "editorMode": "builder",
+                    "exemplar": false,
+                    "expr": "sum(increase(blocky_request_duration_ms_bucket{response_type=\"RESOLVED\"}[$__range])) by (le)",
+                    "format": "heatmap",
+                    "instant": false,
+                    "legendFormat": "{{le}}",
+                    "range": true,
+                    "refId": "A"
+                }
+            ],
+            "title": "Request Time (Upstream)",
+            "transformations": [],
+            "type": "heatmap"
         },
         {
             "datasource": {
@@ -203,7 +301,7 @@
                 "overrides": []
             },
             "gridPos": {
-                "h": 5,
+                "h": 2,
                 "w": 10,
                 "x": 0,
                 "y": 3
@@ -251,6 +349,146 @@
             "fieldConfig": {
                 "defaults": {
                     "color": {
+                        "mode": "fixed"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unit": "short"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 2,
+                "w": 10,
+                "x": 0,
+                "y": 5
+            },
+            "id": 10,
+            "options": {
+                "colorMode": "none",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "pluginVersion": "9.3.6",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "YXFFeJ0Vz"
+                    },
+                    "editorMode": "builder",
+                    "expr": "sum by(docker_node) (blocky_prefetch_count)",
+                    "legendFormat": "__auto",
+                    "range": true,
+                    "refId": "A"
+                }
+            ],
+            "title": "Prefetch Count",
+            "type": "stat"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "YXFFeJ0Vz"
+            },
+            "description": "",
+            "fieldConfig": {
+                "defaults": {
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "short"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 7,
+                "w": 4,
+                "x": 0,
+                "y": 7
+            },
+            "id": 12,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "none",
+                "justifyMode": "center",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "pluginVersion": "9.3.6",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "YXFFeJ0Vz"
+                    },
+                    "editorMode": "builder",
+                    "expr": "avg by(group) (sum by(docker_node) (blocky_blacklist_cache))",
+                    "interval": "",
+                    "legendFormat": "Blacklisted",
+                    "range": true,
+                    "refId": "A"
+                },
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "YXFFeJ0Vz"
+                    },
+                    "editorMode": "builder",
+                    "expr": "avg by(group) (sum by(docker_node) (blocky_whitelist_cache))",
+                    "hide": false,
+                    "legendFormat": "Whitelisted",
+                    "range": true,
+                    "refId": "B"
+                }
+            ],
+            "title": "List Counts",
+            "type": "stat"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "YXFFeJ0Vz"
+            },
+            "description": "",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
                         "mode": "palette-classic"
                     },
                     "custom": {
@@ -266,10 +504,10 @@
                 "overrides": []
             },
             "gridPos": {
-                "h": 8,
-                "w": 7,
-                "x": 10,
-                "y": 6
+                "h": 7,
+                "w": 6,
+                "x": 4,
+                "y": 7
             },
             "id": 4,
             "options": {
@@ -335,42 +573,50 @@
             "fieldConfig": {
                 "defaults": {
                     "color": {
-                        "mode": "fixed"
+                        "mode": "palette-classic"
                     },
+                    "custom": {
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        }
+                    },
+                    "decimals": 0,
                     "mappings": [],
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            }
-                        ]
-                    },
                     "unit": "short"
                 },
                 "overrides": []
             },
             "gridPos": {
-                "h": 6,
-                "w": 10,
-                "x": 0,
-                "y": 8
+                "h": 7,
+                "w": 7,
+                "x": 10,
+                "y": 7
             },
-            "id": 10,
+            "id": 18,
             "options": {
-                "colorMode": "none",
-                "graphMode": "none",
-                "justifyMode": "auto",
-                "orientation": "auto",
+                "displayLabels": [],
+                "legend": {
+                    "displayMode": "table",
+                    "placement": "right",
+                    "showLegend": true,
+                    "values": [
+                        "percent"
+                    ]
+                },
+                "pieType": "pie",
                 "reduceOptions": {
                     "calcs": [
-                        "lastNotNull"
+                        "sum"
                     ],
                     "fields": "",
                     "values": false
                 },
-                "textMode": "auto"
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
             },
             "pluginVersion": "9.3.6",
             "targets": [
@@ -380,14 +626,90 @@
                         "uid": "YXFFeJ0Vz"
                     },
                     "editorMode": "builder",
-                    "expr": "sum by(docker_node) (blocky_prefetch_count)",
-                    "legendFormat": "__auto",
-                    "range": true,
+                    "exemplar": false,
+                    "expr": " sort_desc(sum by (response_type) (ceil(increase(blocky_response_total[$__range]))))",
+                    "instant": true,
+                    "interval": "",
+                    "legendFormat": "{{response_type}}",
+                    "range": false,
                     "refId": "A"
                 }
             ],
-            "title": "Prefetch Count",
-            "type": "stat"
+            "title": "Response Type",
+            "type": "piechart"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "YXFFeJ0Vz"
+            },
+            "description": "",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        }
+                    },
+                    "decimals": 0,
+                    "mappings": [],
+                    "unit": "short"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 7,
+                "w": 7,
+                "x": 17,
+                "y": 7
+            },
+            "id": 20,
+            "options": {
+                "displayLabels": [],
+                "legend": {
+                    "displayMode": "table",
+                    "placement": "right",
+                    "showLegend": true,
+                    "values": [
+                        "percent"
+                    ]
+                },
+                "pieType": "pie",
+                "reduceOptions": {
+                    "calcs": [
+                        "sum"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "YXFFeJ0Vz"
+                    },
+                    "editorMode": "builder",
+                    "exemplar": false,
+                    "expr": " sort_desc(sum by (type) (ceil(increase(blocky_query_total[$__range]))))",
+                    "instant": true,
+                    "interval": "",
+                    "legendFormat": "{{type}}",
+                    "range": false,
+                    "refId": "A"
+                }
+            ],
+            "title": "Query By Type",
+            "type": "piechart"
         }
     ],
     "schemaVersion": 37,
@@ -404,6 +726,6 @@
     "timezone": "",
     "title": "DNS",
     "uid": "Nxg3RxA4z",
-    "version": 13,
+    "version": 22,
     "weekStart": ""
 }
