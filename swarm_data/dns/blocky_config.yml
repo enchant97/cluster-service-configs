@@ -1,4 +1,6 @@
 httpPort: 4000
+# what to use to get DNS records for DoH servers
+bootstrapDns: tcp+udp:1.1.1.1
 
 prometheus:
   enable: true
@@ -6,9 +8,38 @@ prometheus:
 
 upstream:
   default:
-    - 1.1.1.1
-    - 1.0.0.1
+    # DoH servers
+    - https://cloudflare-dns.com/dns-query
+    - https://dns.google/dns-query
+    # Non DoH or DoT
+    # - 1.1.1.1
+    # - 1.0.0.1
+    # - 8.8.8.8
+    # - 8.8.4.4
 
 redis:
   address: redis:6379
   required: true
+
+caching:
+  # smallest amount of time allowed to cache
+  minTime: 5m
+  # pre request expiring records for frequent used queries
+  prefetching: true
+  prefetchMaxItemsCount: 80
+  prefetchThreshold: 8
+
+# custom DNS records
+customDNS:
+  filterUnmappedTypes: true
+  mapping:
+    router.lan: 192.168.1.1
+
+blocking:
+  # blocklists loaded before DNS,
+  # but don't fail if downloads fail
+  startStrategy: blocking
+  # refresh every day
+  refreshPeriod: 24h
+
+  # blocklists/whitelists here
